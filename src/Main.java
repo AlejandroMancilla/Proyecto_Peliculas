@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -12,7 +13,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         loadData();
         int Opc = 1;
-        while(Opc != 0) {
+        do {
             MostrarMenu();
             System.out.print("Seleccione una Opcion: ");
             Opc = sc.nextInt();
@@ -27,9 +28,11 @@ public class Main {
                     break;
                 case 3:
                     AlquilarPelicula();
+                    sc.next();
                     break;
                 case 4:
                     DevoluciónPelicula();
+                    sc.next();
                     break;
                 case 5:
                     ListarPeliculas();
@@ -47,13 +50,15 @@ public class Main {
                     EliminarPelicula();
                     sc.next();
                     break;
+                case 0: 
+                    break;
                 default:
                     System.out.println("Opcion no Valida");
                     System.out.println("- Presione cualquier tecla + Enter -");
                     sc.next();
                     break;
             }
-        }
+        }while(Opc != 0);
     }
 
     static void MostrarMenu() throws Exception {
@@ -68,7 +73,7 @@ public class Main {
         System.out.println("\t6. Listar Clientes");
         System.out.println("\t7. Modificar Pelicula");
         System.out.println("\t8. Eliminar Pelicula");
-        System.out.println("\t9. Salir");
+        System.out.println("\t0. Salir");
         System.out.println("************************************");
     }
 
@@ -108,11 +113,43 @@ public class Main {
     }
 
     static void AlquilarPelicula() {
-
+        System.out.print("\033[H\033[2J");  
+        System.out.flush();
+        System.out.println("-".repeat(41) + "ALQUILAR PELICULA " + "-".repeat(41));
+        ListarPeliculasDisp();
+        System.out.print("Digite ID de pelicula a Alquilar: ");
+        int Select = sc.nextInt();
+        for (Pelicula P : Peliculas) {
+            if(Select == P.getId()){
+                ListarClientes();
+                System.out.print("Digite ID de Cliente que alquila: ");
+                int SelectC = sc.nextInt();
+                Alquiler A = new Alquiler(LocalDate.now(), Clientes.get(SelectC - 1), P);
+                Alquileres.add(A);
+                P.setAlquilada(true);
+                System.out.println("\tALQUILER REALIZADO EXITOSAMENTE");
+                break;
+            }
+        }
     }
 
     static void DevoluciónPelicula() {
-
+        ListarAlquileres();
+        System.out.print("Digite ID de Alquilar a Devolver: ");
+        int Select = sc.nextInt();
+        int Index = Alquileres.size() + 1;
+        for (Alquiler A : Alquileres) {
+            if(Select == A.getId()){
+                Index = Alquileres.indexOf(A);
+                A.getPelicula().setAlquilada(false);
+            }
+        }
+        if(Index <= Alquileres.size()) {
+            Alquileres.remove(Index);
+            System.out.println("\tPELICULA ELIMINADA EXITOSAMENTE");
+        }else{
+            System.out.println("Opción no Valida...");
+        }
     }
 
     static void ListarPeliculas() {
@@ -128,12 +165,47 @@ public class Main {
         System.out.println("+" + "-".repeat(5) + "+" + "-".repeat(20) + "+" + "-".repeat(25) +"+" + "-".repeat(10) + "+" + "-".repeat(10) +"+" + "-".repeat(12) +"+" + "-".repeat(12) + "+");
     }
 
+    static void ListarPeliculasDisp() {
+        System.out.print("\033[H\033[2J");  
+        System.out.flush(); 
+        System.out.println("-".repeat(41) + "LISTADO DE PELICULAS" + "-".repeat(41));
+        System.out.printf("|%-5s|%-20s|%-25s|%-10s|%-10s|%-12s|%-12s|\n", "ID", "TITULO", "DIRECTOR", "GENERO", "PRECIO", "DESCUENTO", "DISPONIBLE");
+        System.out.println("+" + "-".repeat(5) + "+" + "-".repeat(20) + "+" + "-".repeat(25) +"+" + "-".repeat(10) + "+" + "-".repeat(10) +"+" + "-".repeat(12) +"+" + "-".repeat(12) + "+");        
+        for (Pelicula P : Peliculas) {
+            if(P.isAlquilada() == false){
+                String[] Datos = P.Datos();
+                System.out.printf("|%5s|%20S|%25S|%10S|%10S|%12S|%12S|\n", Datos[0], Datos[1], Datos[2], Datos[3], Datos[4], Datos[5], Datos[6]);
+            }
+        }
+        System.out.println("+" + "-".repeat(5) + "+" + "-".repeat(20) + "+" + "-".repeat(25) +"+" + "-".repeat(10) + "+" + "-".repeat(10) +"+" + "-".repeat(12) +"+" + "-".repeat(12) + "+");
+    }
+
     static void ListarClientes() {
-        System.out.printf("|%-30s|%-20s|%-16s|\n", "NOMBRE CLIENTE", "CORREO", "CELULAR");
+        System.out.print("\033[H\033[2J");  
+        System.out.flush(); 
+        System.out.println("-".repeat(33) + " LISTADO DE CLIENTES " + "-".repeat(32));
+        System.out.printf("|%-5s|%-30s|%-30s|%-16s|\n", "ID", "NOMBRE CLIENTE", "CORREO", "CELULAR");
+        System.out.println("+" + "-".repeat(5) + "+" + "-".repeat(30) + "+" + "-".repeat(30) + "+" + "-".repeat(16) + "+");
+        int Cont = 1;
         for (Cliente C : Clientes) {
             String [] Datos = C.Datos();
-            System.out.printf("|%30S|%20S|%16S|\n", Datos[0], Datos[1], Datos[2]);
+            System.out.printf("|%5d|%30S|%30S|%16S|\n", Cont,Datos[0], Datos[1], Datos[2]);
+            Cont++;
         }
+        System.out.println("+" + "-".repeat(5) + "+" + "-".repeat(30) + "+" + "-".repeat(30) + "+" + "-".repeat(16) + "+");
+    }
+
+    static void ListarAlquileres() {
+        System.out.print("\033[H\033[2J");  
+        System.out.flush(); 
+        System.out.println("-".repeat(33) + " LISTADO DE ALQUILERES ACTIVOS " + "-".repeat(32));
+        System.out.printf("|%-5s|%-16s|%-16s|%-20s|%30s|\n", "ID", "FECHA ALQUILER", "FECHA LIMITE", "TITULO PELICULA", "NOMBRE CLIENTE");
+        System.out.println("+" + "-".repeat(5) + "+" + "-".repeat(16) + "+" + "-".repeat(16) + "+" + "-".repeat(20) + "+" + "-".repeat(30) + "+");
+        for (Alquiler A : Alquileres) {
+            String [] Datos = A.Datos();
+            System.out.printf("|%5s|%16s|%16s|%20s|%30s|\n", Datos[0], Datos[1], Datos[2], Datos[3], Datos[4]);
+        }
+        System.out.println("+" + "-".repeat(5) + "+" + "-".repeat(16) + "+" + "-".repeat(16) + "+" + "-".repeat(20) + "+" + "-".repeat(30) + "+");
     }
 
     static void ModificarPelicula() {
