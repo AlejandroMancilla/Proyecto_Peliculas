@@ -53,7 +53,7 @@ public class Main {
                 case 0: 
                     break;
                 default:
-                    System.out.println("Opcion no Valida");
+                    System.out.println("Opcion no Valida ");
                     System.out.println("- Presione cualquier tecla + Enter -");
                     sc.next();
                     break;
