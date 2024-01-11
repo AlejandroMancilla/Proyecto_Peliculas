@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-
+    
     private static Scanner sc = new Scanner(System.in);
     private static List<Pelicula> Peliculas = new ArrayList<Pelicula>();
     private static List<Cliente> Clientes = new ArrayList<Cliente>();
@@ -125,11 +125,37 @@ public class Main {
                 System.out.print("Digite ID de Cliente que alquila: ");
                 int SelectC = sc.nextInt();
                 Alquiler A = new Alquiler(LocalDate.now(), Clientes.get(SelectC - 1), P);
-                Alquileres.add(A);
-                P.setAlquilada(true);
-                System.out.println("\tALQUILER REALIZADO EXITOSAMENTE");
-                break;
+                ImprimirFactura(P, Clientes.get(SelectC - 1));
+                if(Confirmar() == true) {
+                    Alquileres.add(A);
+                    P.setAlquilada(true);
+                    System.out.println("\tALQUILER REALIZADO EXITOSAMENTE");
+                }else{
+                    System.out.println("\tALQUILER CANCELADO");
+                }
             }
+        }
+    }
+    static void ImprimirFactura(Pelicula P, Cliente C) {
+        System.out.print("\033[H\033[2J");  
+        System.out.flush(); 
+        System.out.println("-".repeat(18) + " DETALLES DE ALQUILER " + "-".repeat(18));
+        System.out.println("\tTitulo: " + P.getTitulo());
+        System.out.println("\tCliente: " + C.getNombre());
+        System.out.println("\tPrecio Alquiler: " + P.getPrecio());
+        System.out.println("-".repeat(58));
+        System.out.println();
+    }
+
+    static boolean Confirmar() {
+        System.out.println("Confirmacion...");
+        System.out.println("\t1. Sí");
+        System.out.println("\t2. No");
+        int Opc = sc.nextInt();
+        if(Opc == 1){
+            return true;
+        }else{
+            return false;
         }
     }
 
@@ -216,8 +242,17 @@ public class Main {
             if(Mod == P.getId()){
                 System.out.print("Ingrese Nuevo Precio: ");
                 double NewPrecio = sc.nextDouble();
-                P.setPrecio(NewPrecio);
-                System.out.println("\tPELICULA MODIFICADA EXITOSAMENTE");
+                System.out.println("-".repeat(40));
+                System.out.println("\tPelicula: " + P.getTitulo());
+                System.out.println("\tNuevo Precio: " + NewPrecio);
+                System.out.println("-".repeat(40));
+                if(Confirmar() == true){
+                    P.setPrecio(NewPrecio);
+                    System.out.println("\tPELICULA MODIFICADA EXITOSAMENTE");
+                }else{
+                    System.out.println("\tPROCESO CANCELADO");
+                }
+                
                 return;
             }
         }
@@ -231,12 +266,17 @@ public class Main {
         int Index = Peliculas.size() + 1;
         for (Pelicula P : Peliculas) {
             if(Elim == P.getId()){
+                System.out.println("Pelicula a Eliminar: " + P.getTitulo());
                 Index = Peliculas.indexOf(P);
             }
         }
         if(Index <= Peliculas.size()) {
-            Peliculas.remove(Index);
-            System.out.println("\tPELICULA ELIMINADA EXITOSAMENTE");
+            if(Confirmar() == true) {
+                Peliculas.remove(Index);
+                System.out.println("\tPELICULA ELIMINADA EXITOSAMENTE");
+            }else{
+                System.out.println("\tPROCESO CANCELADO");
+            }
         }else{
             System.out.println("Opción no Valida...");
         }
