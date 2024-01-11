@@ -172,7 +172,7 @@ public class Main {
         }
         if(Index <= Alquileres.size()) {
             Alquileres.remove(Index);
-            System.out.println("\tPELICULA ELIMINADA EXITOSAMENTE");
+            System.out.println("\tDEVOLUCIÓN REALIZADA EXITOSAMENTE");
         }else{
             System.out.println("Opción no Valida...");
         }
