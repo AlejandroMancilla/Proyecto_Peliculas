@@ -10,10 +10,11 @@ public class Main {
     private static List<Alquiler> Alquileres = new ArrayList<Alquiler>();
     
     public static void main(String[] args) throws Exception {
+        loadData();
         int Opc = 1;
         while(Opc != 0) {
             MostrarMenu();
-            System.out.print("Seleccione una Opción: ");
+            System.out.print("Seleccione una Opcion: ");
             Opc = sc.nextInt();
             sc.nextLine();
             System.out.println(Opc);
@@ -40,13 +41,14 @@ public class Main {
                     break;
                 case 7:
                     ModificarPelicula();
+                    sc.next();
                     break;
                 case 8:
                     EliminarPelicula();
                     sc.next();
                     break;
                 default:
-                    System.out.println("Opción no Valida");
+                    System.out.println("Opcion no Valida");
                     System.out.println("- Presione cualquier tecla + Enter -");
                     sc.next();
                     break;
@@ -61,7 +63,7 @@ public class Main {
         System.out.println("\t1. Registrar Pelicula");
         System.out.println("\t2. Registrar Cliente");
         System.out.println("\t3. Alquiler Pelicula");
-        System.out.println("\t4. Devolución Pelicula");
+        System.out.println("\t4. Devolucion Pelicula");
         System.out.println("\t5. Listar Peliculas");
         System.out.println("\t6. Listar Clientes");
         System.out.println("\t7. Modificar Pelicula");
@@ -138,25 +140,58 @@ public class Main {
         ListarPeliculas();
         System.out.print("Digite ID de pelicula a Nodificar: ");
         int Mod = sc.nextInt();
-        if(Mod > 0 && Mod <= Peliculas.size()) {
-            System.out.print("Ingrese Nuevo Precio: ");
-            double NewPrecio = sc.nextDouble();
-            
-            System.out.println("\tPELICULA MODIFICADA EXITOSAMENTE");
-        }else{
-            System.out.println("Opción no Valida...");
+        for (Pelicula P : Peliculas) {
+            if(Mod == P.getId()){
+                System.out.print("Ingrese Nuevo Precio: ");
+                double NewPrecio = sc.nextDouble();
+                P.setPrecio(NewPrecio);
+                System.out.println("\tPELICULA MODIFICADA EXITOSAMENTE");
+                return;
+            }
         }
+        System.out.println("Id No valido...");
     }
 
     static void EliminarPelicula() {
         ListarPeliculas();
         System.out.print("Digite ID de pelicula a eliminar: ");
         int Elim = sc.nextInt();
-        if(Elim > 0 && Elim <= Peliculas.size()) {
-            Peliculas.remove(Elim-1);
+        int Index = Peliculas.size() + 1;
+        for (Pelicula P : Peliculas) {
+            if(Elim == P.getId()){
+                Index = Peliculas.indexOf(P);
+            }
+        }
+        if(Index <= Peliculas.size()) {
+            Peliculas.remove(Index);
             System.out.println("\tPELICULA ELIMINADA EXITOSAMENTE");
         }else{
             System.out.println("Opción no Valida...");
         }
+        
+    }
+
+    private static void loadData() {
+
+        Pelicula pelicula1 = new Pelicula("Rocky I", "Sylvester Stallone","Drama", 4500, 0);
+        Pelicula pelicula2 = new Pelicula("Rocky II", "Sylvester Stallone","Drama", 4500, 0);
+        Pelicula pelicula3 = new Pelicula("Rocky III", "Sylvester Stallone","Drama", 4500, 0);
+        Pelicula pelicula4 = new Pelicula("Rocky IV", "Sylvester Stallone","Drama", 4500, 0);
+        Pelicula pelicula5 = new Pelicula("Bichos", "John Lasseter", "Animada", 5200, 10);
+        Peliculas.add(pelicula1);
+        Peliculas.add(pelicula2);
+        Peliculas.add(pelicula3);
+        Peliculas.add(pelicula4);
+        Peliculas.add(pelicula5);
+
+        Cliente cliente1 = new Cliente("Camilo Rodriguez", "crodrigr@gmail.com", "31548789852");
+        Cliente cliente2 = new Cliente("Juan Perez", "juan@gmail.com", "31548789852");
+        Cliente cliente3 = new Cliente("Pedro Infante", "pedro@gmail.com", "31548789852");
+        Cliente cliente4 = new Cliente("Maria Becerra", "maria@gmail.com", "31548789852");
+
+        Clientes.add(cliente1);
+        Clientes.add(cliente2);
+        Clientes.add(cliente3);
+        Clientes.add(cliente4);
     }
 }
