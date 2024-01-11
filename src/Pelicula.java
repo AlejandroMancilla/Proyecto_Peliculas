@@ -86,5 +86,5 @@ public class Pelicula {
         }        
         String [] Datos = {String.valueOf(id), titulo, director, genero, String.valueOf(precio), String.valueOf(descuento), Dis};
         return Datos;
-        }
+    }
 }

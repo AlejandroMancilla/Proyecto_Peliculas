@@ -36,6 +36,6 @@ public class Cliente {
     public String[] Datos() {  
         String [] Datos = {nombre, correo, celular};
         return Datos;
-        }      
+    }      
 
 }
